@@ -82,7 +82,30 @@ document.getElementById('submit-btn').addEventListener('click', function() {
         "Expenses": expenses
     };
 
-    console.log(JSON.stringify(data));
+    fetch("http://127.0.0.1:5000/budget", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        // Extract the JSON body from the response
+        return response.json();
+    })
+    .then(data => {
+        // Log the response data
+        console.log(data);
+    })
+    .catch(error => {
+        // Handle error here
+        console.error('There was a problem with the fetch operation:', error);
+    });
+    
+    
 });
 
 function updateTotal(amount) {

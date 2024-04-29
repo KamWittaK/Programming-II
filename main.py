@@ -7,7 +7,7 @@ CORS(app)
 Budget = {
     "Rent": 30,
     "Utilities": 10,
-    "Subscription": 5,
+    "Subscriptions": 5,
     "Groceries": 15,
     "Car Payment": 15,
     "Debt": 10,
@@ -17,23 +17,29 @@ Budget = {
 @app.route("/budget", methods=["POST"])
 def budget():
     data = request.get_json()
-    Expensises = data.get("Expensises")
+    Expenses = data.get("Expenses")
     Monthly_Income_After_Tax = data.get("Monthly_Income_After_Tax")
     Left_Over = 0
 
-    Budget_Expensises = {key: Monthly_Income_After_Tax * (value / 100) for key, value in Budget.items()}
+    Budget_Expenses = {key: Monthly_Income_After_Tax * (value / 100) for key, value in Budget.items()}
 
     result = ""
-    for key, value in Expensises.items():
-        if int(value) == Budget_Expensises[key]:
+    for key, value in Expenses.items():
+        if int(value) == Budget_Expenses[key]:
             result += f"You are within your budget for {key}\n"
-        elif int(value) > Budget_Expensises[key]:
-            result += f"You should cutback on {key} by {int(value) - Budget_Expensises[key]}\n"
-        elif int(value) < Budget_Expensises[key]:
-            result += f"You have {Budget_Expensises[key] - int(value)} left over from {key}\n"
-    
+        elif int(value) > Budget_Expenses[key]:
+            result += f"You should cutback on {key} by {int(value) - Budget_Expenses[key]}\n"
+            Left_Over -= int(value) - Budget_Expenses[key]
+        elif int(value) < Budget_Expenses[key]:
+            result += f"You have {Budget_Expenses[key] - int(value)} left over from {key}\n"
+            Left_Over += Budget_Expenses[key] - int(value)
+
     result += f"You have {Left_Over} left for investing\n"
-    return jsonify(result=result)
+    
+    response = jsonify(result=result)
+    response.headers.add('Access-Control-Allow-Origin', '*')  # Allow requests from any origin
+    
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True)
