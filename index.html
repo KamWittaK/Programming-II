@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-side">
+            <h2>Expense Tracker</h2>
+            <label for="expense-select">Select an expense:</label><br>
+            <select id="expense-select">
+                <option value="">Select Expense</option>
+                <option value="Rent">Rent</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Subscriptions">Subscriptions</option>
+                <option value="Groceries">Groceries</option>
+                <option value="Car Payment">Car Payment</option>
+                <option value="Debt">Debt</option>
+                <option value="Savings">Savings</option>
+                <option value="Custom">Custom</option>
+            </select><br>
+            <input type="number" id="custom-expense" placeholder="Enter Monthly Cost"><br>
+            <button id="add-expense-btn">Add Expense</button>
+        </div>
+        <div class="right-side">
+            <div id="expenses-list"></div>
+            <div id="total">Total: $0</div>
+            <button id="submit-btn">Submit</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
