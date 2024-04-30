@@ -8,10 +8,11 @@ Budget = {
     "Rent": 30,
     "Utilities": 10,
     "Subscriptions": 5,
-    "Groceries": 15,
+    "Groceries": 10,
     "Car Payment": 15,
     "Debt": 10,
-    "Savings": 15
+    "Savings": 15,
+    "Custom": 5
 }
 
 @app.route("/budget", methods=["POST"])
@@ -19,20 +20,20 @@ def budget():
     data = request.get_json()
     Expenses = data.get("Expenses")
     Monthly_Income_After_Tax = data.get("Monthly_Income_After_Tax")
-    Left_Over = 0
+    Left_Over = Monthly_Income_After_Tax
 
     Budget_Expenses = {key: Monthly_Income_After_Tax * (value / 100) for key, value in Budget.items()}
 
     result = ""
     for key, value in Expenses.items():
-        if int(value) == Budget_Expenses[key]:
-            result += f"You are within your budget for {key}\n"
-        elif int(value) > Budget_Expenses[key]:
-            result += f"You should cutback on {key} by {int(value) - Budget_Expenses[key]}\n"
-            Left_Over -= int(value) - Budget_Expenses[key]
-        elif int(value) < Budget_Expenses[key]:
-            result += f"You have {Budget_Expenses[key] - int(value)} left over from {key}\n"
-            Left_Over += Budget_Expenses[key] - int(value)
+        if key in Budget_Expenses:
+            if int(value) > Budget_Expenses[key]:
+                result += f"You should cutback on {key} by ${int(value) - Budget_Expenses[key]}\n"
+                Left_Over -= int(value)
+            elif int(value) < Budget_Expenses[key]:
+                Left_Over -= int(value)
+            else:
+                Left_Over -= int(value)
 
     result += f"You have {Left_Over} left for investing\n"
     
