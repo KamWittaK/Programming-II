@@ -42,7 +42,7 @@ print("Predicted price: {:.2f}".format(predicted_price[0]))
 
 # Apple
 # Current: 169.30
-# Predicted: 70.60
+# Predicted: 170.60
 
 # Amazon
 # Current: 179.00
