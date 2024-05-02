@@ -37,5 +37,17 @@ predictions = model.predict(X_test)
 last_data_point = np.array([stock_data.iloc[-1]['Close'], stock_data.iloc[-1]['MA_10']]).reshape(1, -1)
 predicted_price = model.predict(last_data_point)
 
-print(f"Starting price for the past 10 days: {stock_prices[0]:.2f}")
-print("Predicted price for tomorrow based on the past 50 days of data: {:.2f}".format(predicted_price[0]))
+print(f"Starting price: {stock_prices[0]:.2f}")
+print("Predicted price: {:.2f}".format(predicted_price[0]))
+
+# Apple
+# Current: 169.30
+# Predicted: 70.60
+
+# Amazon
+# Current: 179.00
+# Predicted: 179.31
+
+# Microsoft
+# Current: 394.94
+# Predicted: 398.61
