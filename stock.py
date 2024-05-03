@@ -1,53 +1,78 @@
-import yfinance as yf
 import numpy as np
-from sklearn.model_selection import train_test_split
+import pandas as pd
+import yfinance as yf
 from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
 
-# Ticker symbol of the stock (e.g., Apple Inc. is 'AAPL')
-ticker_symbol = "AAPL"
+def fetch_sp500_tickers():
+    # Fetch S&P 500 data from Wikipedia
+    table = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
+    sp500_df = table[0]
+    tickers = sp500_df['Symbol'].tolist()
+    
+    # Correcting specific ticker symbols that might not be formatted correctly
+    tickers = [ticker.replace('.', '-') for ticker in tickers]
+    
+    return tickers
 
-# Fetch historical stock data for the past 51 days including the target (tomorrow's price)
-stock_data = yf.download(ticker_symbol, period="51d", interval="1d")
-stock_data1 = yf.download(ticker_symbol, period="1d", interval="1d")
+def predict_tomorrows_price(ticker_symbol):
+    try:
+        # Fetch historical stock data for the past 51 days including the target (tomorrow's price)
+        stock_data = yf.download(ticker_symbol, period="51d", interval="1d")
+        if stock_data.empty:
+            print(f"No data for {ticker_symbol}")
+            return None
+        # Calculate moving average (MA) for the past 10 days
+        stock_data['MA_10'] = stock_data['Close'].rolling(window=10).mean()
 
-stock_prices = stock_data1['Close'].values
+        # Drop rows with missing values
+        stock_data.dropna(inplace=True)
 
+        # Feature engineering: Use 'Close' prices and 'MA_10' as features
+        X = stock_data[['Close', 'MA_10']].values[:-1]  # Remove the last row to match with shifted y
+        y = stock_data['Close'].shift(-1).dropna().values  # Shift y by -1 day
 
-# Calculate moving average (MA) for the past 10 days
-stock_data['MA_10'] = stock_data['Close'].rolling(window=10).mean()
+        # Split data into training and testing sets
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Drop rows with missing values
-stock_data.dropna(inplace=True)
+        # Train the linear regression model
+        model = LinearRegression()
+        model.fit(X_train, y_train)
 
-# Feature engineering: Use 'Close' prices and 'MA_10' as features
-X = stock_data[['Close', 'MA_10']].values[:-1]  # Remove the last row to match with shifted y
-y = stock_data['Close'].shift(-1).dropna().values  # Shift y by -1 day
+        # Predict tomorrow's price using the last available data
+        last_data_point = np.array([stock_data.iloc[-1]['Close'], stock_data.iloc[-1]['MA_10']]).reshape(1, -1)
+        predicted_price = model.predict(last_data_point)
+        
+        # Calculate the percentage change
+        current_price = stock_data.iloc[-1]['Close']
+        percentage_change = ((predicted_price[0] - current_price) / current_price) * 100
 
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        return {
+            "Ticker": ticker_symbol,
+            "Current Price": current_price,
+            "Predicted Price": predicted_price[0],
+            "Percentage Change": percentage_change
+        }
+    except Exception as e:
+        print(f"Error processing {ticker_symbol}: {e}")
+        return None
 
-# Train the linear regression model
-model = LinearRegression()
-model.fit(X_train, y_train)
+def main():
+    tickers = fetch_sp500_tickers()
+    results = []
+    
+    for ticker in tickers:
+        result = predict_tomorrows_price(ticker)
+        if result:
+            results.append(result)
+    
+    results_df = pd.DataFrame(results)
+    results_df.to_csv('stock_predictions.csv', index=False)
+    
+    data = pd.read_csv('stock_predictions.csv')
+    top_changes = data.sort_values(by='Percentage Change', ascending=False).head(10)
+    print("Top 10 stocks with the highest percentage changes:")
+    print(top_changes)
 
-# Make predictions on the testing set
-predictions = model.predict(X_test)
-
-# Predict tomorrow's price using the last available data
-last_data_point = np.array([stock_data.iloc[-1]['Close'], stock_data.iloc[-1]['MA_10']]).reshape(1, -1)
-predicted_price = model.predict(last_data_point)
-
-print(f"Starting price: {stock_prices[0]:.2f}")
-print("Predicted price: {:.2f}".format(predicted_price[0]))
-
-# Apple
-# Current: 169.30
-# Predicted: 170.60
-
-# Amazon
-# Current: 179.00
-# Predicted: 179.31
-
-# Microsoft
-# Current: 394.94
-# Predicted: 398.61
+if __name__ == "__main__":
+    main()
