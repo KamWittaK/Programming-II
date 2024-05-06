@@ -76,6 +76,7 @@ def predict_tomorrows_price_multiprocessing(ticker_symbol):
         print(f"Error processing {ticker_symbol}: {e}")
         return None
 
+
 @app.route("/budget", methods=["POST"])
 def budget():
     # Get expense data from the request
@@ -110,8 +111,29 @@ def budget():
     
     return response
 
+@app.route("/predict_stock", methods=["POST"])
+def predict_saved_stock():
+    data = request.get_json()
+    database = pd.read_csv("database.csv")
+    row_index = database.index[database['Username'] == data['Username']].tolist()
+
+
+    if row_index:
+        tickers_string = database.at[row_index[0], 'Tickers']
+        # Split the tickers string into a list, and strip extra quotes if necessary
+        tickers = [ticker.strip().replace('"', '') for ticker in tickers_string.split(",")]
+
+        data = {}
+
+        for i in tickers:
+            data[i] = predict_tomorrows_price_multiprocessing(i)
+
+        return jsonify({"Tickers": data})
+    else:
+        return jsonify({"Error": "Username not found"})
+
 @app.route("/predict", methods=["POST"])
-def predict2():
+def predict():
     tickers = fetch_sp500_tickers()
     results = []
     
@@ -152,7 +174,8 @@ def insert():
             database.at[row_index[0], key] = value
     else:
         # If the username doesn't exist, append a new row
-        database = database.append(data, ignore_index=True)
+            return jsonify({"Status": "Not Successful",
+                            "Reason": "No username found"})
 
     # Write the updated DataFrame back to the CSV file
     database.to_csv("database.csv", index=False)
