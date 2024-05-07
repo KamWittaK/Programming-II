@@ -111,8 +111,8 @@ def budget():
     
     return response
 
-@app.route("/predict_stock", methods=["POST"])
-def predict_saved_stock():
+@app.route("/predict_saved_stocks", methods=["POST"])
+def predict_saved_stocks():
     data = request.get_json()
     database = pd.read_csv("database.csv")
     row_index = database.index[database['Username'] == data['Username']].tolist()
