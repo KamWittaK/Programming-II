@@ -132,8 +132,8 @@ def predict_saved_stocks():
     else:
         return jsonify({"Error": "Username not found"})
 
-@app.route("/predict", methods=["POST"])
-def predict():
+@app.route("/predict_all_stocks", methods=["POST"])
+def predict_all_stocks():
     tickers = fetch_sp500_tickers()
     results = []
     
@@ -157,6 +157,33 @@ def predict():
     
     print("Top 10 stocks with the highest percentage changes:")
     return jsonify(top_changes_dict)
+
+@app.route("/short_all_stocks", methods=["POST"])
+def short_all_stocks():
+    tickers = fetch_sp500_tickers()
+    results = []
+    
+    # Define the number of processes to use (adjust as needed)
+    num_processes = mp.cpu_count()  # Utilize all available CPU cores
+    
+    with mp.Pool(processes=num_processes) as pool:
+        results = pool.map(predict_tomorrows_price_multiprocessing, tickers)
+    
+    # Filter out None results
+    results = [result for result in results if result is not None]
+    
+    results_df = pd.DataFrame(results)
+    results_df.to_csv('stock_predictions.csv', index=False)
+    
+    data = pd.read_csv('stock_predictions.csv')
+    top_changes = data.sort_values(by='Percentage Change', ascending=True).head(10)
+    
+    # Convert DataFrame to dictionary
+    top_changes_dict = top_changes.to_dict(orient='records')
+    
+    print("Top 10 stocks with the lowest percentage changes:")
+    return jsonify(top_changes_dict)
+
 
 @app.route("/insert", methods=["POST"])
 def insert():
