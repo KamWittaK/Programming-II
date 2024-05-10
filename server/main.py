@@ -132,7 +132,7 @@ def predict_saved_stocks():
     else:
         return jsonify({"Error": "Username not found"})
 
-@app.route("/predict", methods=["POST"])
+@app.route("/predict", methods=["GET"])
 def predict():
     tickers = fetch_sp500_tickers()
     results = []
