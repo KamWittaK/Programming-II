@@ -163,7 +163,7 @@ def insert():
     data = request.get_json()
 
     # Read the existing data
-    database = pd.read_csv("database.csv")
+    database = pd.read_csv("server/data/database.csv")
 
     # Find the row index where the username matches
     row_index = database.index[database['Username'] == data['Username']].tolist()
@@ -174,11 +174,11 @@ def insert():
             database.at[row_index[0], key] = value
     else:
         # If the username doesn't exist, append a new row
-            return jsonify({"Status": "Not Successful",
-                            "Reason": "No username found"})
+        return jsonify({"Status": "Not Successful",
+                        "Reason": "No username found"})
 
     # Write the updated DataFrame back to the CSV file
-    database.to_csv("database.csv", index=False)
+    database.to_csv("server/data/database.csv", index=False)
 
     return jsonify({"Status": "Successful"})
     
@@ -186,12 +186,23 @@ def insert():
 def signup():
     data = request.get_json()
 
-    df = pd.DataFrame({
-        "Username": [data["Username"]],
-        "Password": [data["Password"]]
-    })
+    # Read the existing data
+    database = pd.read_csv("server/data/database.csv")
 
-    df.to_csv("database.csv", mode='a', index=False, header=False)
+    # Find the row index where the username matches
+    row_index = database.index[database['Username'] == data['Username']].tolist()
+
+    if row_index:
+        # Update the existing row with new data
+        return jsonify({"Status": "Not Successful",
+                        "Reason": "Username Existing"})
+    else:
+        # If the username doesn't exist, append a new row
+        database = database.append(data, ignore_index=True)
+
+
+    # Write the updated DataFrame back to the CSV file
+    database.to_csv("server/data/database.csv", index=False)
 
     return jsonify({"Status": "Successful"})
 
