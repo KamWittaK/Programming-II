@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 import yfinance as yf
@@ -182,29 +183,43 @@ def insert():
 
     return jsonify({"Status": "Successful"})
     
-@app.route("/signup", methods=["POST"])
+# Get the current directory of the script
+current_dir = os.path.dirname(__file__)
+
+# Construct the full path to the CSV file
+csv_path = os.path.abspath(os.path.join(current_dir, "../server/data/database.csv"))
+
+
+@app.route("/signupapi", methods=["POST"])
 def signup():
     data = request.get_json()
+    # Get the current directory of the script
+    current_dir = os.path.dirname(__file__)
 
-    # Read the existing data
-    database = pd.read_csv("server/data/database.csv")
+    # Construct the full path to the CSV file
+    csv_path = os.path.abspath(os.path.join(current_dir, "../server/data/database.csv"))
 
-    # Find the row index where the username matches
-    row_index = database.index[database['Username'] == data['Username']].tolist()
+    print("Received JSON data:", data)  # Print the JSON data received
 
-    if row_index:
-        # Update the existing row with new data
-        return jsonify({"Status": "Not Successful",
-                        "Reason": "Username Existing"})
-    else:
-        # If the username doesn't exist, append a new row
-        database = database.append(data, ignore_index=True)
+    # Check if the username already exists
+    if 'Username' not in data:
+        return jsonify({"Status": "Not Successful", "Reason": "No username provided"}), 400
 
+    # Check if the username already exists in the database
+    if data['Username'] in database['Username'].values:
+        return jsonify({"Status": "Not Successful", "Reason": "Username already exists"}), 400
+    
+    # Append the new user data to the database
+    database = database.append(data, ignore_index=True)
 
-    # Write the updated DataFrame back to the CSV file
-    database.to_csv("server/data/database.csv", index=False)
+    # Write the updated database DataFrame back to the CSV file
+    database.to_csv(csv_path, index=False)
 
-    return jsonify({"Status": "Successful"})
+    # Return a success response with CORS headers
+    response = jsonify({"Status": "Successful"})
+
+    return response, 200
+
 
 if __name__ == '__main__':
-    app.run(debug=True)  # Run the Flask app in debug mode
+    app.run(debug=True, port=4444)  # Run the Flask app in debug mode

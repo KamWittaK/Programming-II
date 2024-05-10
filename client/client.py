@@ -1,5 +1,5 @@
 import datetime
-import jwt
+import jwt, os, pandas as pd
 from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
 from flask_cors import CORS
 from functools import wraps
@@ -7,8 +7,9 @@ from functools import wraps
 app = Flask(__name__)
 CORS(app)
 
-EXPECTED_USER = 'kameron'
-EXPECTED_HASH = 'f8e4b9226f1b9cf140a2ca20f0922c1ae13d12ef24a0a537416adf6c8886a873'
+current_dir = os.path.dirname(__file__)
+csv_path = os.path.abspath(os.path.join(current_dir, "../server/data/database.csv"))
+database_df = pd.read_csv(csv_path)
 
 JWT_KEY = "ec599d45e025437d8206209e3b2e536d"
 JWT_ALGO = "HS256"
@@ -38,21 +39,31 @@ def login():
     user = data.get('username', '').lower()
     user_hash = data.get('hash')
 
-    if user == EXPECTED_USER and user_hash == EXPECTED_HASH:
-        token = jwt.encode({"user": user, "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=10)}, JWT_KEY)
+    # Get usernames and passwords from the DataFrame
+    usernames = database_df["Username"].str.lower()
+    passwords = database_df["Password"]
 
-        # Return the token in the JSON response
-        return jsonify({"token": token, "message": "Authentication successful"})
-    else:
-        return jsonify({'message': 'Authentication failed. Invalid Username or Hash.'}), 401
+    for username, password in zip(usernames, passwords):
+        if user == username and user_hash == password:
+            token = jwt.encode({"user": user, "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=10)}, JWT_KEY)
+
+            # Return the token in the JSON response
+            return jsonify({"token": token, "message": "Authentication successful"})
+
+    # If no match is found
+    return jsonify({'message': 'Authentication failed. Invalid Username or Hash.'}), 401
 
 @app.route("/")
 def home():
     return render_template("landingpage.html")
 
+@app.route("/signup")
+def signup():
+    return render_template("signup.html")
+
 @app.route("/token_expired")
 def token_expired():
-    return render_template("token_expired.html")
+    return render_template("landingpage.html")
 
 @app.route("/dash")
 @token_required
