@@ -1,0 +1,290 @@
+.ctrack {
+  flex: 1;
+  position: relative;
+  font-size: 50px;
+  line-height: 80px;
+  font-family: var(--font-inknut-antiqua);
+  color: var(--color-black);
+  text-align: left;
+}
+.ctrack-wrapper {
+  position: absolute;
+  left: 7%;
+}
+.pexels-anna-nekrashevich-68020-icon {
+  align-self: stretch;
+  flex: 1;
+  position: relative;
+  border-radius: 62px;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.create-your-personal {
+  margin: 0;
+  height: 158px;
+  flex: 1;
+  position: relative;
+  font-size: inherit;
+  font-weight: 400;
+  font-family: inherit;
+  display: inline-block;
+  max-width: 100%;
+}
+.input-fields {
+  align-self: stretch;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0 15px 12px 0;
+  box-sizing: border-box;
+  min-width: 209px;
+  max-width: 100%;
+  text-align: center;
+  font-size: 55px;
+  color: var(--color-black);
+  font-family: var(--font-istok-web);
+}
+.username {
+  margin: 0;
+  flex: 1;
+  position: relative;
+  font-size: inherit;
+  line-height: 38px;
+  font-weight: 500;
+  font-family: inherit;
+}
+.input-field,
+.primary-button {
+  align-self: stretch;
+  box-sizing: border-box;
+}
+.primary-button {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 0 var(--padding-9xs);
+  max-width: 100%;
+}
+.input-field {
+  border: 1px solid var(--color-gray);
+  outline: 0;
+  background-color: var(--color-whitesmoke);
+  height: 81px;
+  box-shadow: var(--button-shadow);
+  border-radius: var(--br-5xs);
+  min-width: 250px;
+}
+.field-titles {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 15px;
+  max-width: 100%;
+}
+.password {
+  margin: 0;
+  flex: 1;
+  position: relative;
+  font-size: inherit;
+  line-height: 38px;
+  font-weight: 500;
+  font-family: inherit;
+}
+.password-wrapper {
+  width: 152px;
+  height: 38px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 0 0 0 var(--padding-5xs);
+  box-sizing: border-box;
+}
+.input-field1 {
+  border: 1px solid var(--color-gray);
+  outline: 0;
+  background-color: var(--color-whitesmoke);
+  align-self: stretch;
+  height: 81px;
+  box-shadow: var(--button-shadow);
+  border-radius: var(--br-5xs);
+  box-sizing: border-box;
+  min-width: 250px;
+}
+.field-titles1 {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 7px;
+  max-width: 100%;
+}
+.sign-up {
+  position: relative;
+  font-size: var(--small-text-size);
+  line-height: 150%;
+  font-weight: 500;
+  font-family: var(--small-text);
+  color: var(--color-white);
+  text-align: center;
+  display: inline-block;
+  min-width: 60px;
+}
+.log-in {
+  position: relative;
+  font-size: var(--small-text-size);
+  line-height: 150%;
+  font-weight: 500;
+  font-family: var(--small-text);
+  color: var(--color-white);
+  text-align: center;
+  display: inline-block;
+  min-width: 60px;
+}
+.button,
+.button-area {
+  display: flex;
+  align-items: flex-start;
+}
+.button {
+  cursor: pointer;
+  border: 0;
+  padding: 28px 31px;
+  background-color: var(--color-black);
+  box-shadow: var(--button-shadow);
+  border-radius: var(--br-5xs);
+  flex-direction: row;
+  justify-content: flex-start;
+}
+.button1:hover,
+.button:hover {
+  background-color: var(--color-darkslategray);
+}
+.button-area {
+  width: 559px;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--padding-9xs) 20px 0;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+.or {
+  align-self: stretch;
+  position: relative;
+  line-height: 150%;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.or-wrapper {
+  height: 55px;
+  width: 31px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: var(--padding-6xl) 0 0;
+  box-sizing: border-box;
+}
+.log-in {
+  position: relative;
+  font-size: var(--small-text-size);
+  line-height: 150%;
+  font-weight: 500;
+  font-family: var(--small-text);
+  color: var(--color-white);
+  text-align: left;
+  display: inline-block;
+  min-width: 47px;
+  white-space: nowrap;
+}
+.button1 {
+  cursor: pointer;
+  border: 0;
+  padding: 29.5px 36px;
+  background-color: var(--color-black);
+  flex: 0.395;
+  box-shadow: var(--button-shadow);
+  border-radius: var(--br-5xs);
+  justify-content: flex-start;
+}
+.button1,
+.sign-up-button-area,
+.sign-up-button-area-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+.sign-up-button-area {
+  width: 315px;
+  justify-content: flex-start;
+  gap: 21.5px;
+}
+.sign-up-button-area-wrapper {
+  width: 437px;
+  height: 84px;
+  justify-content: flex-end;
+  padding: 0 122px 0 0;
+  box-sizing: border-box;
+  font-size: var(--font-size-xl);
+}
+.input-fields-parent,
+.landing-page-inner {
+  width: 573px;
+  display: flex;
+  flex-direction: column;
+}
+.input-fields-parent {
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 44px;
+  max-width: 100%;
+}
+.landing-page-inner {
+  height: 689px;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0 0 42px;
+  box-sizing: border-box;
+}
+/* Ensure the landing page uses flexbox to arrange children side by side */
+.landing-page {
+  display: flex;        /* Enables flexbox */
+  flex-direction: row;  /* Aligns children in a row */
+  justify-content: start; /* Aligns children to the start of the main-axis */
+  align-items: start;   /* Aligns children at the start of the cross-axis */
+  padding: 10px 55px var(--padding-6xl) 35px;
+  gap: 30px;            /* Adds space between the flex items */
+}
+
+/* Ensure the image container (adjust class if the image is inside another container) */
+.pexels-anna-nekrashevich-68020-icon {
+  flex: 0 1 auto;       /* Do not grow, allow shrink, basis auto */
+  max-width: 20%;       /* Maximum width of the image container */
+  height: auto;         /* Height set to auto for responsive behavior */
+  border-radius: 62px;
+  margin-top: 5%;
+}
+
+/* Ensure the content container takes the remaining space */
+.frame-parent {
+  flex: 1;              /* Takes remaining space */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 30px;
+  max-width: 50%;       /* Maximum width to balance the layout */
+}
+
+/* Adjustments for input and button areas might be needed */
+.input-fields {
+  justify-content: flex-start; /* Aligns content to the start */
+}
