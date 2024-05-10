@@ -30,7 +30,7 @@ async function submitForm(event) {
         body: JSON.stringify(data)
     };
 
-    fetch('/auth', requestOptions)
+    fetch('http://127.0.0.1:4444/auth', requestOptions)
         .then(response => response.json())
         .then(data => {
             if (data.token) {

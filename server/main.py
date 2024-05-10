@@ -77,7 +77,6 @@ def predict_tomorrows_price_multiprocessing(ticker_symbol):
         print(f"Error processing {ticker_symbol}: {e}")
         return None
 
-
 @app.route("/budget", methods=["POST"])
 def budget():
     # Get expense data from the request
@@ -133,13 +132,12 @@ def predict_saved_stocks():
     else:
         return jsonify({"Error": "Username not found"})
 
-<<<<<<< HEAD:main.py
 @app.route("/predict_all_stocks", methods=["POST"])
 def predict_all_stocks():
-=======
+    pass
+
 @app.route("/predict", methods=["GET"])
 def predict():
->>>>>>> f0a55e3e7a78e53ec6572b02bc2c8a05e294991f:server/main.py
     tickers = fetch_sp500_tickers()
     results = []
     
@@ -190,68 +188,45 @@ def short_all_stocks():
     print("Top 10 stocks with the lowest percentage changes:")
     return jsonify(top_changes_dict)
 
-
 @app.route("/insert", methods=["POST"])
 def insert():
     data = request.get_json()
+    current_dir = os.path.dirname(__file__)
+    csv_path = os.path.abspath(os.path.join(current_dir, "../server/data/database.csv"))
+    database = pd.read_csv(csv_path)
 
-    # Read the existing data
-    database = pd.read_csv("server/data/database.csv")
-
-    # Find the row index where the username matches
     row_index = database.index[database['Username'] == data['Username']].tolist()
 
     if row_index:
-        # Update the existing row with new data
         for key, value in data.items():
             database.at[row_index[0], key] = value
     else:
-        # If the username doesn't exist, append a new row
         return jsonify({"Status": "Not Successful",
                         "Reason": "No username found"})
 
-    # Write the updated DataFrame back to the CSV file
-    database.to_csv("server/data/database.csv", index=False)
+    database.to_csv(csv_path, index=False)
 
     return jsonify({"Status": "Successful"})
     
-# Get the current directory of the script
-current_dir = os.path.dirname(__file__)
-
-# Construct the full path to the CSV file
-csv_path = os.path.abspath(os.path.join(current_dir, "../server/data/database.csv"))
-
-
 @app.route("/signupapi", methods=["POST"])
 def signup():
     data = request.get_json()
-    # Get the current directory of the script
     current_dir = os.path.dirname(__file__)
-
-    # Construct the full path to the CSV file
     csv_path = os.path.abspath(os.path.join(current_dir, "../server/data/database.csv"))
+    database = pd.read_csv(csv_path)
 
-    print("Received JSON data:", data)  # Print the JSON data received
-
-    # Check if the username already exists
     if 'Username' not in data:
         return jsonify({"Status": "Not Successful", "Reason": "No username provided"}), 400
 
-    # Check if the username already exists in the database
     if data['Username'] in database['Username'].values:
         return jsonify({"Status": "Not Successful", "Reason": "Username already exists"}), 400
     
-    # Append the new user data to the database
-    database = database.append(data, ignore_index=True)
-
-    # Write the updated database DataFrame back to the CSV file
+    new_data = pd.DataFrame([data])
+    database = pd.concat([database, new_data], ignore_index=True)
     database.to_csv(csv_path, index=False)
-
-    # Return a success response with CORS headers
     response = jsonify({"Status": "Successful"})
 
     return response, 200
-
 
 if __name__ == '__main__':
     app.run(debug=True, port=4444)  # Run the Flask app in debug mode

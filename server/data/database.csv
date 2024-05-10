@@ -1,6 +1,9 @@
-Username,Password,Rent,Utilities,Subscriptions,Groceries,Car Payment,Debt,Savings,Custom,Tickers
-kameron,f8e4b9226f1b9cf140a2ca20f0922c1ae13d12ef24a0a537416adf6c8886a873,,,,,,,,1250.0,"""AVGO"",""DXCM"",""EL"",""ETSY"",""NCLH"",""QRVO"",""SMCI"",SWKS"""
-Kameron1,Kam's_Password1,,,,,,,,1250.0,
-Testing,,,,,,,,,,
-Testing1,,,,,,,,,,
-Testing12,Password,,,,,,,,,
+Username,Password,Rent,Utilities,Subscriptions,Groceries,Car Payment,Debt,Savings,Custom,Tickers,custom
+kameron,f8e4b9226f1b9cf140a2ca20f0922c1ae13d12ef24a0a537416adf6c8886a873,,,,,,,,1250.0,"""AVGO"",""DXCM"",""EL"",""ETSY"",""NCLH"",""QRVO"",""SMCI"",SWKS""",
+Kameron1,Kam's_Password1,,,,,,,,1250.0,,
+Testing,,,,,,,,,,,
+Testing1,,,,,,,,,,,
+Testing12,Password,,,,,,,,,,
+Kameron,1250,,,,,,,,,,
+Kameron2,12500,,,,,,,,,,12500.0
+testing,5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8,,,,,,,,,,
