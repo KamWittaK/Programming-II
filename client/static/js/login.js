@@ -13,13 +13,15 @@ async function submitForm(event) {
     const form = document.getElementById('loginForm');
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const twofa    = document.getElementById("2FA").value
 
     // Compute SHA-256 hash of the password
     const passwordHash = await sha256(password);
 
     const data = {
         username: username,
-        hash: passwordHash
+        hash: passwordHash,
+        twofa: twofa
     };
 
     const requestOptions = {
@@ -30,7 +32,7 @@ async function submitForm(event) {
         body: JSON.stringify(data)
     };
 
-    fetch('http://127.0.0.1:4444/auth', requestOptions)
+    fetch('http://127.0.0.1:5000/auth', requestOptions)
         .then(response => response.json())
         .then(data => {
             if (data.token) {

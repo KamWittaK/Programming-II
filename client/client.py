@@ -1,4 +1,4 @@
-import datetime
+import datetime, pyotp, qrcode
 import jwt, os, pandas as pd
 from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
 from flask_cors import CORS
@@ -18,14 +18,13 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.cookies.get("token")
-        print(token)
 
         if not token:
             return jsonify({'message': 'Token is missing'}), 401
         try:
             data = jwt.decode(token, JWT_KEY, algorithms=[JWT_ALGO])
         except jwt.ExpiredSignatureError:
-            return render_template("token_expired.html"), 401
+            return render_template("landingpage.html"), 401
         except jwt.InvalidTokenError:
             return jsonify({'message': 'Invalid token'}), 401
 
@@ -36,23 +35,43 @@ def token_required(f):
 @app.route("/auth", methods=['POST'])
 def login():
     data = request.get_json()
-    user = data.get('username', '').lower()
-    user_hash = data.get('hash')
+    username = data.get('username', '').lower()
+    password_hash = data.get('hash')
+    user_otp = data.get('twofa')  # This is the 2FA code the user submits
 
-    # Get usernames and passwords from the DataFrame
-    usernames = database_df["Username"].str.lower()
-    passwords = database_df["Password"]
+    print(f"Username: {username}")
 
-    for username, password in zip(usernames, passwords):
-        if user == username and user_hash == password:
-            token = jwt.encode({"user": user, "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=10)}, JWT_KEY)
 
-            # Return the token in the JSON response
-            return jsonify({"token": token, "message": "Authentication successful"})
+    # Get user data from the DataFrame or your database system
+    user_data = database_df.loc[database_df["Username"].str.lower() == username]
 
-    # If no match is found
-    return jsonify({'message': 'Authentication failed. Invalid Username or Hash.'}), 401
+    if user_data.empty:
+        print("empty")
 
+    if not user_data.empty:
+        user_secret_key = user_data.iloc[0]['SecretKey']  # Assume the secret key is stored in the database
+        user_password = user_data.iloc[0]['Password']
+        print(f"Expected Hash: {password_hash}")
+        print(f"Given Hash: {user_password}")
+        print(f"Given: 2FA {user_otp}")
+
+        if password_hash == user_password:
+            print("Step 1")
+            # Verify TOTP
+            totp = pyotp.TOTP(user_secret_key)
+            print(user_secret_key)
+            print(totp.verify(user_otp))
+            if totp.verify(user_otp):
+                # Generate JWT token
+                token = jwt.encode({"user": username, "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, JWT_KEY, algorithm="HS256")
+                return jsonify({"token": token, "message": "Authentication successful"})
+            else:
+                return jsonify({"message": "Invalid 2FA code."}), 403
+        else:
+            return jsonify({"message": "Invalid username or password."}), 401
+    else:
+        return jsonify({"message": "User not found."}), 404
+    
 @app.route("/")
 def home():
     return render_template("landingpage.html")
