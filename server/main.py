@@ -1,6 +1,7 @@
 import os
 import pyotp
 import qrcode
+import requests
 import numpy as np
 import pandas as pd
 import yfinance as yf
@@ -117,7 +118,11 @@ def budget():
 @app.route("/predict_saved_stocks", methods=["POST"])
 def predict_saved_stocks():
     data = request.get_json()
-    database = pd.read_csv("database.csv")
+
+    current_dir = os.path.dirname(__file__)
+    csv_path = os.path.abspath(os.path.join(current_dir, "../server/data/stock_predictions.csv"))
+    database = pd.read_csv(csv_path)
+    
     row_index = database.index[database['Username'] == data['Username']].tolist()
 
 
@@ -136,6 +141,34 @@ def predict_saved_stocks():
         return jsonify({"Error": "Username not found"})
 
 @app.route("/predict_all_stocks", methods=["GET"])
+def predict():
+    tickers = fetch_sp500_tickers()
+    results = []
+    
+    # Define the number of processes to use (adjust as needed)
+    num_processes = mp.cpu_count()  # Utilize all available CPU cores
+    
+    with mp.Pool(processes=num_processes) as pool:
+        results = pool.map(predict_tomorrows_price_multiprocessing, tickers)
+    
+    # Filter out None results
+    results = [result for result in results if result is not None]
+    
+    results_df = pd.DataFrame(results)
+
+    current_dir = os.path.dirname(__file__)
+    csv_path = os.path.abspath(os.path.join(current_dir, "../server/data/stock_predictions.csv"))
+    results_df.to_csv(csv_path, index=False)
+    
+    data = pd.read_csv(csv_path)
+    top_changes = data.sort_values(by='Percentage Change', ascending=False).head(10)
+    
+    # Convert DataFrame to dictionary
+    top_changes_dict = top_changes.to_dict(orient='records')
+    
+    print("Top 10 stocks with the highest percentage changes:")
+    return jsonify(top_changes_dict)
+
 def test():
     return jsonify([
 	{
@@ -200,51 +233,37 @@ def test():
 	}
 ])
 
-def predict():
-    tickers = fetch_sp500_tickers()
-    results = []
-    
-    # Define the number of processes to use (adjust as needed)
-    num_processes = mp.cpu_count()  # Utilize all available CPU cores
-    
-    with mp.Pool(processes=num_processes) as pool:
-        results = pool.map(predict_tomorrows_price_multiprocessing, tickers)
-    
-    # Filter out None results
-    results = [result for result in results if result is not None]
-    
-    results_df = pd.DataFrame(results)
-    results_df.to_csv('stock_predictions.csv', index=False)
-    
-    data = pd.read_csv('stock_predictions.csv')
-    top_changes = data.sort_values(by='Percentage Change', ascending=False).head(10)
-    
-    # Convert DataFrame to dictionary
-    top_changes_dict = top_changes.to_dict(orient='records')
-    
-    print("Top 10 stocks with the highest percentage changes:")
-    return jsonify(top_changes_dict)
-
-@app.route("/insert", methods=["POST"])
-def insert():
+@app.route("/save_expenses", methods=["POST"])
+def save_expenses():
     data = request.get_json()
+    username = data.get('Username')
+    expenses = data.get('Expenses')
+
+    if not username:
+        return jsonify({"Status": "Not Successful", "Reason": "No username provided"})
+
+    if not expenses:
+        return jsonify({"Status": "Not Successful", "Reason": "No expenses provided"})
+
     current_dir = os.path.dirname(__file__)
     csv_path = os.path.abspath(os.path.join(current_dir, "../server/data/database.csv"))
     database = pd.read_csv(csv_path)
 
-    row_index = database.index[database['Username'] == data['Username']].tolist()
+    # Check if the username exists in the database
+    row_index = database.index[database['Username'] == username].tolist()
 
     if row_index:
-        for key, value in data.items():
+        # Update expenses for the existing user
+        for key, value in expenses.items():
             database.at[row_index[0], key] = value
     else:
-        return jsonify({"Status": "Not Successful",
-                        "Reason": "No username found"})
+        return jsonify({"Status": "Error", "Message": "Username not Found"})
 
+    # Save the updated database to CSV
     database.to_csv(csv_path, index=False)
 
-    return jsonify({"Status": "Successful"})
-    
+    return jsonify({"Status": "Success", "Message": "Expenses saved successfully"})
+
 @app.route("/signupapi", methods=["POST"])
 def signup():
     data = request.get_json()
@@ -286,6 +305,46 @@ def signup():
 
     # Return the QR code image directly
     return send_file(img_bytes, mimetype='image/png', as_attachment=False)
+
+@app.route("/get_expenses", methods=["POST"])
+def get_expenses():
+    data = request.get_json()
+    username = data.get('Username')
+
+    if not username:
+        return jsonify({"Status": "Not Successful", "Reason": "No username provided"})
+
+    current_dir = os.path.dirname(__file__)
+    csv_path = os.path.abspath(os.path.join(current_dir, "../server/data/database.csv"))
+    database = pd.read_csv(csv_path)
+
+    # Check if the username exists in the database
+    row_index = database.index[database['Username'] == username].tolist()
+
+    if not row_index:  # Check if the list is empty
+        return jsonify({"Status": "Not Successful", "Reason": "Username not found"})
+
+    user_data = database.loc[row_index[0]]  # Assuming usernames are unique, we use the first match
+
+    send = {}
+
+    # Add Monthly_Income_After_Tax as a separate object
+    send["Monthly_Income_After_Tax"] = user_data.get("Income", 0)
+
+    # Add Expenses
+    expenses = ["Rent", "Utilities", "Subscriptions", "Groceries", "Car Payment", "Debt", "Savings", "Custom"]
+    user_expenses = {}
+
+    for expense in expenses:
+        expense_value = user_data.get(expense, 0)
+        if not pd.isna(expense_value):
+            user_expenses[expense] = expense_value
+        else:
+            user_expenses[expense] = 0  # Assign 0 or any other default value if NaN
+    
+    send["Expenses"] = user_expenses
+
+    return jsonify({"Status": "Successful", "Data": send})
 
 
 if __name__ == '__main__':

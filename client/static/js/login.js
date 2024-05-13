@@ -37,6 +37,7 @@ async function submitForm(event) {
         .then(data => {
             if (data.token) {
                 document.cookie = `token=${data.token};`;
+                document.cookie = `username=${username};`;
                 window.location.href = "/STrack";
             } else {
                 console.error("Authentication failed.");

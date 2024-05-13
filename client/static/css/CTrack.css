@@ -1,0 +1,138 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+    background-color: #f4f4f4; /* Light background */
+}
+
+.sidebar {
+    width: 150px;
+    background-color: #fff; /* White sidebar */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0;
+    z-index: 10;
+}
+
+.nav-btn {
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+    cursor: pointer;
+    text-align: center;
+    color: #555; /* Dark grey text */
+    border: none;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+    background-color: #ddd; /* Light grey hover color */
+}
+
+.main-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
+    z-index: 2;
+}
+
+.logout-btn {
+    padding: 5px 15px;
+    cursor: pointer;
+    color: #555;
+    background-color: transparent;
+    border: 1px solid #ddd; /* Light grey border */
+    border-radius: 5px; /* Rounded border */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #ddd; /* Light grey hover background */
+    color: #333; /* Dark grey hover text color */
+}
+
+.container {
+    position: absolute;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    margin: auto; /* Center both horizontally and vertically */
+    z-index: 1;
+}
+
+.left-side {
+    width: 45%;
+    text-align: center;
+}
+
+.right-side {
+    width: 45%;
+    text-align: center;
+}
+
+select, input, button {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    margin: 5px;
+}
+
+button {
+    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#expenses-list {
+    margin-top: 20px;
+    text-align: left;
+}
+
+#expenses-list li {
+    list-style: none;
+    margin-bottom: 5px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+}
+
+.delete-btn:hover {
+    background-color: #bd2130;
+}
+
+#total {
+    margin-top: 20px;
+    font-weight: bold;
+}

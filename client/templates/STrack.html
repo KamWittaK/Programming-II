@@ -11,9 +11,8 @@
 <body>
     <div class="sidebar">
         <button class="nav-btn active">Home</button>
-        <a href="/dash" class="nav-btn">Portfolio</a>
+        <a href="/STrack_Portfolio" class="nav-btn">Portfolio</a>
         <a href="/CTrack" class="nav-btn">CTrack</a>
-        <a href="/dash" class="nav-btn">Settings</a>
     </div>
     <div class="main-container">
         <header class="header">
@@ -29,6 +28,7 @@
             <button class="next-btn" onclick="nextSlide()">&#10095;</button>
         </div>
     </div>
+    <div class="loading-spinner"></div>
     <script src="{{ url_for('static', filename='js/STrack.js') }}"></script>
 </body>
 </html>

@@ -9,7 +9,6 @@ CORS(app)
 
 current_dir = os.path.dirname(__file__)
 csv_path = os.path.abspath(os.path.join(current_dir, "../server/data/database.csv"))
-database_df = pd.read_csv(csv_path)
 
 JWT_KEY = "ec599d45e025437d8206209e3b2e536d"
 JWT_ALGO = "HS256"
@@ -24,7 +23,7 @@ def token_required(f):
         try:
             data = jwt.decode(token, JWT_KEY, algorithms=[JWT_ALGO])
         except jwt.ExpiredSignatureError:
-            return render_template("landingpage.html"), 401
+            return render_template("login.html"), 401
         except jwt.InvalidTokenError:
             return jsonify({'message': 'Invalid token'}), 401
 
@@ -40,7 +39,7 @@ def login():
     user_otp = data.get('twofa')  # This is the 2FA code the user submits
 
     print(f"Username: {username}")
-
+    database_df = pd.read_csv(csv_path)
 
     # Get user data from the DataFrame or your database system
     user_data = database_df.loc[database_df["Username"].str.lower() == username]
@@ -93,6 +92,16 @@ def STrack():
 @token_required
 def Ctrack():
     return render_template("CTrack.html")
+
+@app.route("/STrack_Portfolio")
+@token_required
+def STrack_Portfolio():
+    return render_template("STrack_Portfolio.html")
+
+@app.route("/CTrack_Portfolio")
+@token_required
+def CTrack_Portfolio():
+    return render_template("CTrack_Portfolio.html")
 
 @app.route('/client/static/<path:path>')
 def serve_static(path):

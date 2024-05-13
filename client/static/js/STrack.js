@@ -1,6 +1,7 @@
 // Update your JavaScript code
 let currentIndex = 0;
 const slider = document.querySelector('.slider');
+const loadingSpinner = document.querySelector('.loading-spinner');
 
 // Function to make GET request to fetch stock data
 async function fetchStockData() {
@@ -53,15 +54,22 @@ function createStockBox(container, stockData) {
     container.appendChild(box);
 }
 
-// Function to render the slider
+
 async function renderSlider() {
+    // Show loading spinner
+    loadingSpinner.style.display = 'block';
+
     const stockData = await fetchStockData();
     slider.innerHTML = ''; // Clear previous content
 
     stockData.forEach(stock => {
         createStockBox(slider, stock);
     });
+
+    // Hide loading spinner after fetch is complete
+    loadingSpinner.style.display = 'none';
 }
+
 
 function renderChart(canvas, chartData) {
     // Extract the necessary data from the API response
