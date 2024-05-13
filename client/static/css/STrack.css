@@ -26,6 +26,7 @@ body {
   border: none;
   background-color: transparent;
   transition: background-color 0.3s ease;
+  text-decoration: none;
 }
 
 .nav-btn:hover,
@@ -126,4 +127,3 @@ body {
   position: absolute;
   top: 0px;
 }
-

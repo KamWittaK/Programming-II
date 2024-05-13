@@ -74,7 +74,7 @@ def login():
     
 @app.route("/")
 def home():
-    return render_template("landingpage.html")
+    return render_template("login.html")
 
 @app.route("/signup")
 def signup():
@@ -82,12 +82,17 @@ def signup():
 
 @app.route("/token_expired")
 def token_expired():
-    return render_template("landingpage.html")
+    return render_template("login.html")
 
-@app.route("/dash")
+@app.route("/STrack")
 @token_required
-def dash():
-    return render_template("dashboard.html")
+def STrack():
+    return render_template("STrack.html")
+
+@app.route("/CTrack")
+@token_required
+def Ctrack():
+    return render_template("CTrack.html")
 
 @app.route('/client/static/<path:path>')
 def serve_static(path):

@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="/client/static/css/dashboard.css">
+    <link rel="stylesheet" href="/client/static/css/STrack.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 </head>
 <body>
     <div class="sidebar">
         <button class="nav-btn active">Home</button>
-        <button class="nav-btn">Profile</button>
-        <button class="nav-btn">Settings</button>
-        <button class="nav-btn">Reports</button>
+        <a href="/dash" class="nav-btn">Portfolio</a>
+        <a href="/CTrack" class="nav-btn">CTrack</a>
+        <a href="/dash" class="nav-btn">Settings</a>
     </div>
     <div class="main-container">
         <header class="header">
@@ -29,6 +29,6 @@
             <button class="next-btn" onclick="nextSlide()">&#10095;</button>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/STrack.js') }}"></script>
 </body>
 </html>
