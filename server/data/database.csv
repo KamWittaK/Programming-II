@@ -1,3 +1,2 @@
-Username,Password,SecretKey,Income,Rent,Utilities,Subscriptions,Groceries,Car Payment,Debt,Savings,Custom,Tickers
-kameron,f8e4b9226f1b9cf140a2ca20f0922c1ae13d12ef24a0a537416adf6c8886a873,N6EDPN4RLQ6EZTEDASYTDXE22UEZYE4O,5000,1500,400,,,,,1250,,"""AVGO"",""DXCM"",""EL"",""ETSY"",""NCLH"",""QRVO"",""SMCI"",SWKS"""
-testing,0f9dfb30eb75106bcff91a77b7e5776c1bac0e6e53037b50b619cbb2d7fbf5cb,WZJLXPAB4YR6NO2JOJ2OSCY3G3VOUEPJ,,,,,,,,,,
+Username,Password,SecretKey,Income After Tax,Rent,Utilities,Subscriptions,Groceries,Car Payment,Debt,Savings,Custom,Tickers
+kameron,f8e4b9226f1b9cf140a2ca20f0922c1ae13d12ef24a0a537416adf6c8886a873,N6EDPN4RLQ6EZTEDASYTDXE22UEZYE4O,5000.0,1500.0,,,,,,,,"""AVGO"",""DXCM"",""EL"",""ETSY"",""NCLH"",""QRVO"",""SMCI"",SWKS"""

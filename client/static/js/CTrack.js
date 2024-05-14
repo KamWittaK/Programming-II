@@ -78,9 +78,11 @@ document.getElementById('submit-btn').addEventListener('click', function() {
     }
 
     var budgetData = {
-        "Monthly_Income_After_Tax": 5000,
+        "Monthly_Income_After_Tax": expenses["Income After Tax"],
         "Expenses": expenses
     };
+
+    console.log(budgetData)
 
     fetch("http://127.0.0.1:4444/budget", {
         method: "POST",

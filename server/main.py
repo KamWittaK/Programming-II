@@ -97,12 +97,13 @@ def budget():
     for key, value in Expenses.items():
         if key in Budget_Expenses:
             if int(value) == Budget_Expenses[key]:
-                result[key] = f"You are very close to going over Budget (yellow)"
+                result[key] = f"You are very close to going over Budget"
+                Left_Over -= int(value)
             elif int(value) > Budget_Expenses[key]:
-                result[key] = f"You should cutback by ${int(value) - Budget_Expenses[key]} (red)"
+                result[key] = f"You should cutback by ${int(value) - Budget_Expenses[key]}"
                 Left_Over -= int(value)
             elif int(value) < Budget_Expenses[key]:
-                result[key] = f"You are well under budget (green)"
+                result[key] = f"You are well under budget"
                 Left_Over -= int(value)
             else:
                 Left_Over -= int(value)
@@ -329,7 +330,7 @@ def get_expenses():
     send = {}
 
     # Add Monthly_Income_After_Tax as a separate object
-    send["Monthly_Income_After_Tax"] = user_data.get("Income", 0)
+    send["Monthly_Income_After_Tax"] = user_data.get("Income After Tax", 0)
 
     # Add Expenses
     expenses = ["Rent", "Utilities", "Subscriptions", "Groceries", "Car Payment", "Debt", "Savings", "Custom"]

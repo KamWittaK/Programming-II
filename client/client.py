@@ -93,11 +93,6 @@ def STrack():
 def Ctrack():
     return render_template("CTrack.html")
 
-@app.route("/STrack_Portfolio")
-@token_required
-def STrack_Portfolio():
-    return render_template("STrack_Portfolio.html")
-
 @app.route("/CTrack_Portfolio")
 @token_required
 def CTrack_Portfolio():
